@@ -1,156 +1,223 @@
-# Netflix_Data_Assignment
+# PCA_Assignment
 
 ## Project Overview
 
-This project focuses on analyzing and visualizing a Netflix dataset containing information about movies and TV shows. The objective is to extract meaningful insights through data cleaning, exploration, and visualization using Python and R.
+### Project Overview
 
-The project was completed as part of a data analytics assignment and demonstrates the integration of multiple tools for effective data analysis.
+This project was completed as part of Milestone Assignment 2 on Principal Component Analysis (PCA). The objective of the project is to analyze the Breast Cancer Wisconsin dataset from sklearn.datasets and reduce the dimensionality of the dataset using PCA.
 
-## Assignment Objectives
+As a Data Analyst at Anderson Cancer Center, the goal is to identify essential variables that can help simplify analysis while retaining the most important information within the dataset.
 
-The following requirements were successfully completed:
+Additionally, Logistic Regression was implemented as a bonus task to evaluate how effectively the reduced dataset can be used for prediction.
 
-* Data preparation (unzipping and organizing dataset)
-* Data cleaning (handling missing values)
-* Data exploration (descriptive and statistical analysis)
-* Data visualization using Python (Matplotlib & Seaborn)
-* Integration of R for visualization
-* Proper documentation and project structuring
+### Objectives
 
-## Dataset Description
+The main objectives of this project are:
 
-The dataset contains information about Netflix content, including:
+* Load and analyze the Breast Cancer dataset
+* Standardize the dataset
+* Apply Principal Component Analysis (PCA)
+* Reduce the dataset into 2 principal components
+* Visualize the transformed dataset
+* Evaluate how much variance is retained after dimensionality reduction
+* Implement Logistic Regression for prediction (Bonus Task)
+* Technologies and Libraries Used
 
-* Title
-* Director
-* Cast
-* Country
-* Release year
-* Rating
-* Duration
-* Genre (listed_in)
-
-## Tools & Libraries Used
-### Python Libraries
+The following Python libraries were used:
 
 * pandas
+* numpy
 * matplotlib
-* seaborn
-* zipfile
-* os
+* scikit-learn
 
-### R Libraries
+### Dataset Information
 
-* ggplot2
+The dataset used is the Breast Cancer Wisconsin dataset available directly from Scikit-learn.
 
-## Data Preparation
+It contains:
 
-The dataset was initially provided in a compressed (ZIP) format. It was extracted and organized into a working directory.
+* 569 samples
+* 30 numerical features
+* Target classes:
+* Malignant
+* Benign
 
-*Python Code:* 
+The dataset includes features such as:
 
-import zipfile
-import os
+* Radius
+* Texture
+* Perimeter
+* Area
+* Smoothness
+* Compactness
 
-with zipfile.ZipFile('netflix_data.csv.zip', 'r') as zip_ref:
-    zip_ref.extractall('Netflix_shows_movies')
 
-os.listdir('Netflix_shows_movies')
+### Project Workflow
 
-## Data Cleaning
+1. Import Libraries
 
-Missing values were identified and handled appropriately to ensure data consistency.
+Required Python libraries are imported for:
 
-Approach:
+* Data handling
+* Visualization
+* Machine learning
+* PCA implementation
 
-* Filled categorical null values with "Unknown"
-* Dropped rows with critical missing fields
+2. Load the Dataset
 
-*Python Code:* 
+The Breast Cancer dataset is loaded using:
 
-import pandas as pd
+from sklearn.datasets import load_breast_cancer
 
-df = pd.read_csv('Netflix_shows_movies/netflix_data.csv')
+The features and target variables are separated into:
 
-df['director'] = df['director'].fillna('Unknown')
-df['cast'] = df['cast'].fillna('Unknown')
-df['country'] = df['country'].fillna('Unknown')
+* X → Feature variables
+* y → Target variable
 
-df.dropna(subset=['date_added', 'rating'], inplace=True)
+3. Standardize the Dataset
 
-## Data Exploration
+Before applying PCA, the dataset is standardized using StandardScaler.
 
-Basic data understanding and statistical summaries were performed.
+Why?
 
-*Python Code:* 
+PCA is highly sensitive to differences in scale. Standardization ensures:
 
-df.info()
-df.describe()
+Mean = 0
 
-df['type'].value_counts()
-df['rating'].value_counts()
+Standard deviation = 1
 
-*Key Insights:*
+This allows all variables to contribute equally.
 
-* The dataset contains both Movies and TV Shows
-* Some ratings appear more frequently than others
-* Missing values were present in key descriptive fields
+Code used:
 
-## Data Visualization (Python)
-*A. Most Watched Genres* 
+scaler = StandardScaler()
 
-To analyze popular genres, the listed_in column was split and expanded.
+X_scaled = scaler.fit_transform(X)
 
-import matplotlib.pyplot as plt
-import seaborn as sns
+4. Apply Principal Component Analysis (PCA)
 
-df['listed_in'] = df['listed_in'].str.split(',')
-df_genre = df.explode('listed_in')
-df_genre['listed_in'] = df_genre['listed_in'].str.strip()
+PCA is implemented to reduce the original 30-dimensional dataset into 2 principal components.
 
-genre_counts = df_genre['listed_in'].value_counts().head(10)
+Code used:
 
-plt.figure()
-sns.barplot(x=genre_counts.values, y=genre_counts.index)
-plt.title('Top 10 Genres on Netflix')
-plt.xlabel('Count')
-plt.ylabel('Genre')
-plt.show()
+pca = PCA(n_components=2)
 
-*B. Ratings Distribution* 
+X_pca = pca.fit_transform(X_scaled)
 
-plt.figure()
-sns.countplot(data=df, x='rating')
-plt.title('Distribution of Ratings')
-plt.xticks(rotation=45)
-plt.show()
+The transformed dataset now contains:
 
-*Insights:* 
+Principal Component 1 (PC1)
+Principal Component 2 (PC2)
 
-* Certain genres dominate Netflix content
-* Ratings are unevenly distributed across titles
+These components retain most of the important information from the original dataset.
 
-Data Visualization (R Integration)
+What is PCA?
 
-One of the visualizations was recreated in R using ggplot2.
+Principal Component Analysis (PCA) is a dimensionality reduction technique used in machine learning and data analysis.
 
-## R Code
+It works by:
 
-library(ggplot2)
+* Identifying patterns in data
+* Finding directions with maximum variance
+* Transforming many variables into fewer components
 
-df <- read.csv("netflix_titles.csv")
+Benefits of PCA:
 
-ggplot(df, aes(x=rating)) +
-  geom_bar() +
-  theme(axis.text.x = element_text(angle=45, hjust=1)) +
-  ggtitle("Distribution of Ratings")
+* Reduces complexity
+* Improves visualization
+* Reduces computational cost
+* Removes redundancy
+* Explained Variance Ratio
 
-## Conclusion
+The explained variance ratio shows how much information each principal component retains.
 
-This project demonstrates how raw data can be transformed into actionable insights through:
+Code used:
 
-* Effective data cleaning
-* Structured exploration
-* Clear visual storytelling
+print(pca.explained_variance_ratio_)
 
-It also highlights the integration of Python and R in a single analytics workflow.
+Example interpretation:
+
+PC1 may retain approximately 44% of variance
+
+PC2 may retain approximately 19%
+
+Together, both components retain a significant portion of the dataset’s information.
+
+Data Visualization
+
+A scatter plot is created to visualize the dataset after dimensionality reduction.
+
+The graph:
+
+Displays the two PCA components
+Separates malignant and benign cancer cases using colors
+
+Visualization helps demonstrate how PCA simplifies complex data into two dimensions.
+
+Logistic Regression (Bonus Task)
+
+Logistic Regression was implemented to classify cancer cases using the two PCA components.
+
+Steps performed:
+
+* Split dataset into training and testing sets
+* Train Logistic Regression model
+* Predict test results
+* Evaluate model performance
+
+Code used:
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+Model Evaluation
+
+The following evaluation metrics were used:
+
+Accuracy Score
+
+Measures overall prediction accuracy.
+
+Confusion Matrix
+
+Shows:
+
+* True Positives
+* True Negatives
+* False Positives
+* False Negatives
+
+Classification Report
+
+Provides:
+
+* Precision
+* Recall
+* F1-score
+
+How to Run the Project in Jupyter Notebook
+
+Step 1: Install Required Libraries
+
+Run the following command:
+
+pip install pandas numpy matplotlib scikit-learn
+
+Expected Output
+
+The notebook produces:
+
+* Dataset preview
+* PCA-transformed dataset
+* Explained variance ratio
+* PCA scatter plot
+* Logistic Regression accuracy
+* Confusion matrix
+* Classification report
+
+### Conclusion
+
+This project successfully demonstrates the use of Principal Component Analysis (PCA) for dimensionality reduction on the Breast Cancer dataset.
+
+The dataset was reduced from 30 features to 2 principal components while preserving significant information. Logistic Regression further demonstrated that the reduced dataset can still be effectively used for prediction and classification tasks.
+
+The project highlights the importance of PCA in simplifying complex datasets and improving data visualization and analysis.
