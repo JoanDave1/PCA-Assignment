@@ -1,223 +1,206 @@
-# PCA_Assignment
-
-## Project Overview
+# Fashion MNIST Assignment
 
 ### Project Overview
 
-This project was completed as part of Milestone Assignment 2 on Principal Component Analysis (PCA). The objective of the project is to analyze the Breast Cancer Wisconsin dataset from sklearn.datasets and reduce the dimensionality of the dataset using PCA.
+This project implements a Convolutional Neural Network (CNN) using TensorFlow/Keras in Python to classify images from the Fashion MNIST dataset. The objective of the project is to train a deep learning model capable of recognizing and classifying grayscale images of clothing items into their respective categories.
 
-As a Data Analyst at Anderson Cancer Center, the goal is to identify essential variables that can help simplify analysis while retaining the most important information within the dataset.
+The project was completed as part of the Module 6 Assignment on image classification and deep learning. It demonstrates the practical application of CNNs in computer vision tasks, specifically image recognition and classification.
 
-Additionally, Logistic Regression was implemented as a bonus task to evaluate how effectively the reduced dataset can be used for prediction.
+The Fashion MNIST dataset was used because it is a standard benchmark dataset for machine learning and deep learning experiments involving image classification.
 
 ### Objectives
 
-The main objectives of this project are:
+The primary aim of this assignment was to:
 
-* Load and analyze the Breast Cancer dataset
-* Standardize the dataset
-* Apply Principal Component Analysis (PCA)
-* Reduce the dataset into 2 principal components
-* Visualize the transformed dataset
-* Evaluate how much variance is retained after dimensionality reduction
-* Implement Logistic Regression for prediction (Bonus Task)
-* Technologies and Libraries Used
+* Develop a Convolutional Neural Network (CNN) with six layers using Keras
+* Train the model on the Fashion MNIST dataset
+* Evaluate the performance of the trained model
+* Make predictions on at least two images from the dataset
+* Understand the workflow of image classification using deep learning
 
-The following Python libraries were used:
+This assignment also serves as an introduction to how AI systems classify images in real-world applications such as:
 
-* pandas
-* numpy
-* matplotlib
-* scikit-learn
+* facial recognition
+* medical image analysis
+* product recommendation systems
+* autonomous vehicles
+* retail and fashion technology
 
 ### Dataset Information
 
-The dataset used is the Breast Cancer Wisconsin dataset available directly from Scikit-learn.
+The Fashion MNIST dataset is a collection of grayscale images consisting of 10 categories of fashion items.
 
-It contains:
+Each image:
 
-* 569 samples
-* 30 numerical features
-* Target classes:
-* Malignant
-* Benign
+* is 28 × 28 pixels
+* is grayscale
+* belongs to one of 10 clothing classes
 
-The dataset includes features such as:
+The dataset contains:
 
-* Radius
-* Texture
-* Perimeter
-* Area
-* Smoothness
-* Compactness
+* 60,000 training images
+* 10,000 testing images
 
+The classes include:
+
+* T-shirt/top
+* Trouser
+* Pullover
+* Dress
+* Coat
+* Sandal
+* Shirt
+* Sneaker
+* Bag
+* Ankle boot
 
 ### Project Workflow
 
-1. Import Libraries
+The project followed the standard deep learning workflow for image classification:
 
-Required Python libraries are imported for:
+* Importing required libraries
+* Loading the Fashion MNIST dataset
+* Preprocessing the dataset
+* Building the CNN architecture
+* Compiling the model
+* Training the CNN
+* Evaluating model performance
+* Making predictions
+* Visualizing prediction results
 
-* Data handling
-* Visualization
-* Machine learning
-* PCA implementation
+### Data Preprocessing
 
-2. Load the Dataset
+Before training the model, the dataset was preprocessed to improve performance and compatibility with the CNN architecture.
 
-The Breast Cancer dataset is loaded using:
+* Normalization : The image pixel values were normalized by dividing all values by 255.0. This converted pixel intensities from the range: 0-255 to 0-1. Normalization helps the neural network:
 
-from sklearn.datasets import load_breast_cancer
+* train faster
+* improve accuracy
+* maintain stable learning
 
-The features and target variables are separated into:
+* Reshaping Images: The images were reshaped into the format:
 
-* X → Feature variables
-* y → Target variable
+(28, 28, 1)
 
-3. Standardize the Dataset
+This was necessary because CNNs require image data to include:
 
-Before applying PCA, the dataset is standardized using StandardScaler.
+* height
+* width
+* color channels
 
-Why?
+Since Fashion MNIST images are grayscale, the channel value was set to 1.
 
-PCA is highly sensitive to differences in scale. Standardization ensures:
+### CNN Architecture
 
-Mean = 0
+A Convolutional Neural Network (CNN) with six layers was developed using Keras Sequential API.
 
-Standard deviation = 1
+The architecture included:
 
-This allows all variables to contribute equally.
+* Convolutional Layer
+* Max Pooling Layer
+* Convolutional Layer
+* Max Pooling Layer
+* Flatten Layer
+* Dense Layer
 
-Code used:
+An output layer with Softmax activation was also included for classification into 10 categories.
 
-scaler = StandardScaler()
+### Explanation of CNN Components
 
-X_scaled = scaler.fit_transform(X)
+* Convolutional Layers: The convolutional layers were responsible for detecting important image features such as:
 
-4. Apply Principal Component Analysis (PCA)
+* edges
+* curves
+* textures
+* shapes
 
-PCA is implemented to reduce the original 30-dimensional dataset into 2 principal components.
+The first convolutional layer extracted simple patterns, while the second layer learned more complex clothing features.
 
-Code used:
+* Max Pooling Layers: Pooling layers reduced the size of feature maps while preserving important information.
 
-pca = PCA(n_components=2)
+Their purpose was to:
 
-X_pca = pca.fit_transform(X_scaled)
+* reduce computational complexity
+* improve training efficiency
+* prevent overfitting
 
-The transformed dataset now contains:
+* Flatten Layer: The flatten layer converted two-dimensional feature maps into a one-dimensional vector so the dense layers could process the information.
 
-Principal Component 1 (PC1)
-Principal Component 2 (PC2)
+* Dense Layer: The dense layer combined the learned features to make classification decisions.
 
-These components retain most of the important information from the original dataset.
+* Output Layer: The output layer used the Softmax activation function to generate probability scores for each clothing category.
 
-What is PCA?
+The category with the highest probability became the model’s final prediction.
 
-Principal Component Analysis (PCA) is a dimensionality reduction technique used in machine learning and data analysis.
+### Model Compilation
 
-It works by:
+The model was compiled using:
 
-* Identifying patterns in data
-* Finding directions with maximum variance
-* Transforming many variables into fewer components
+* Adam optimizer
+* Sparse categorical crossentropy loss function
+* Accuracy evaluation metric
 
-Benefits of PCA:
+* Adam Optimizer: The Adam optimizer was used because it efficiently updates model weights during training and improves convergence speed.
 
-* Reduces complexity
-* Improves visualization
-* Reduces computational cost
-* Removes redundancy
-* Explained Variance Ratio
+* Loss Function: Sparse categorical crossentropy measured how far the model’s predictions were from the correct labels.
 
-The explained variance ratio shows how much information each principal component retains.
+* Accuracy Metric: Accuracy was used to monitor how well the CNN classified images correctly.
 
-Code used:
+### Model Training
 
-print(pca.explained_variance_ratio_)
+The CNN was trained using the training dataset over multiple epochs.
 
-Example interpretation:
+During training, the model:
 
-PC1 may retain approximately 44% of variance
+* made predictions
+* calculated errors
+* adjusted weights
+* improved performance iteratively
 
-PC2 may retain approximately 19%
+Validation data was used during training to monitor the model’s generalization performance.
 
-Together, both components retain a significant portion of the dataset’s information.
+### Model Evaluation
 
-Data Visualization
+After training, the model was evaluated using the testing dataset.
 
-A scatter plot is created to visualize the dataset after dimensionality reduction.
+The evaluation process measured:
 
-The graph:
+* test loss
+* classification accuracy
 
-Displays the two PCA components
-Separates malignant and benign cancer cases using colors
+This step determined how effectively the CNN could classify unseen images.
 
-Visualization helps demonstrate how PCA simplifies complex data into two dimensions.
+### Predictions
 
-Logistic Regression (Bonus Task)
+The trained model was used to make predictions on images from the testing dataset.
 
-Logistic Regression was implemented to classify cancer cases using the two PCA components.
+At least two images were selected and displayed alongside:
 
-Steps performed:
+* predicted labels
+* actual labels
 
-* Split dataset into training and testing sets
-* Train Logistic Regression model
-* Predict test results
-* Evaluate model performance
+This demonstrated the CNN’s ability to correctly identify clothing categories.
 
-Code used:
+### Visualization
 
-model = LogisticRegression()
-model.fit(X_train, y_train)
-Model Evaluation
+Matplotlib was used to:
 
-The following evaluation metrics were used:
+* display Fashion MNIST images
+* visualize predictions
+* compare predicted and actual labels
 
-Accuracy Score
-
-Measures overall prediction accuracy.
-
-Confusion Matrix
-
-Shows:
-
-* True Positives
-* True Negatives
-* False Positives
-* False Negatives
-
-Classification Report
-
-Provides:
-
-* Precision
-* Recall
-* F1-score
-
-How to Run the Project in Jupyter Notebook
-
-Step 1: Install Required Libraries
-
-Run the following command:
-
-pip install pandas numpy matplotlib scikit-learn
-
-Expected Output
-
-The notebook produces:
-
-* Dataset preview
-* PCA-transformed dataset
-* Explained variance ratio
-* PCA scatter plot
-* Logistic Regression accuracy
-* Confusion matrix
-* Classification report
+Visualization helped confirm whether the model’s predictions were accurate.
 
 ### Conclusion
 
-This project successfully demonstrates the use of Principal Component Analysis (PCA) for dimensionality reduction on the Breast Cancer dataset.
+This project successfully demonstrated the implementation of a Convolutional Neural Network (CNN) for image classification using the Fashion MNIST dataset.
 
-The dataset was reduced from 30 features to 2 principal components while preserving significant information. Logistic Regression further demonstrated that the reduced dataset can still be effectively used for prediction and classification tasks.
+The CNN learned to identify patterns and features within clothing images and accurately classify them into their respective categories. The project provided practical experience with deep learning workflows and highlighted the effectiveness of CNNs in computer vision applications.
 
-The project highlights the importance of PCA in simplifying complex datasets and improving data visualization and analysis.
+The knowledge gained from this assignment can be extended to more advanced AI applications involving:
+
+* facial recognition
+* object detection
+* medical diagnostics
+* retail recommendation systems
+* autonomous systems
